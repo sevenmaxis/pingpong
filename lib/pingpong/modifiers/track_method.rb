@@ -85,8 +85,6 @@ RUBY
 puts rewriter.rewrite(buffer)
 
 def parse_source(source)
-  require 'astrolabe/builder'
-  require 'parser/current'
   buffer = Parser::Source::Buffer.new('(string)')
   buffer.source = source
 
@@ -116,54 +114,5 @@ module Vernacular
         parse_source(source)
       end
     end
-  end
-end
-
-module ParseSource
-
-  def parse_source(source)
-    require 'astrolabe/builder'
-    require 'parser/current'
-
-    parser = Parser::CurrentRuby.new
-
-    buffer = Parser::Source::Buffer.new('(string)')
-    buffer.source = source
-
-    parser.parse(buffer)
-  end
-
-end
-
-module MethodRewriter
-
-  # Triggered wherenever a `:def` node is added to the AST.
-  # Hope nobody will use pp_[original_method_name] convention
-  # We can rise exeption in case of same name convention
-  def on_def(node)
-    method_name = node.children.first
-    original_method_name = "pp_#{method_name}"
-
-    node.children.first = original_method_name
-
-    source = <<-RUBY
-      def #{method_name}
-        output = original_method_name
-        # store output to DB
-      end
-    RUBY
-
-    parse_source(source)
-
-
-
-
-  end
-
-  private
-
-  def build_method(method_name, arg_list_node)
-
-
   end
 end
