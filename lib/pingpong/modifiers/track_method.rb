@@ -19,6 +19,26 @@ module Parser
 
   end
 
+  class InsertTrack < PPTreeRewriter
+
+    def on_def(node)
+      expression = node.children[2].loc.expression
+
+      code = <<~PP
+      method(__method__).parameters.each do |_, arg|
+          puts "\#{arg}: \#{binding.local_variable_get(arg)}"
+        end
+      PP
+
+      @source_rewriter.transaction do
+        insert_before(expression, "result = begin\n\s\s")
+        insert_before(expression, code)
+        insert_after(expression, "\nend\nputs result")
+      end
+    end
+
+  end
+
   class AddPPMethod < PPTreeRewriter
 
     # change method name to pp_<original_method_name>
@@ -76,7 +96,7 @@ module Parser
 
 end
 
-rewriter = Parser::AddPPMethod.new
+rewriter = Parser::InsertTrack.new
 buffer = Parser::Source::Buffer.new('(example)')
 buffer.source = <<~RUBY
   def test(x, y)
