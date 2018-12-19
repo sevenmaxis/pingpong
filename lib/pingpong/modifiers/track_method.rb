@@ -8,11 +8,10 @@ require 'unparser'
 # lib/vernacular/ast.rb
 # we can set the project file path to prevent other the project files to be compiled
 
-# fix TreeRewriter#rewrite method to avoid passing ast parameter
 module Parser
 
   class PPTreeRewriter < TreeRewriter
-
+    # fix TreeRewriter#rewrite method to avoid passing ast parameter
     def rewrite(buffer)
       super(buffer, Parser::CurrentRuby.new.parse(buffer))
     end
