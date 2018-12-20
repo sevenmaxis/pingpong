@@ -5,7 +5,7 @@ require 'parser/current'
 require 'unparser'
 
 # TODO: lib/vernacular/ast.rb
-# we can set the project file path to prevent other the project files to be compiled
+# we can set the project file path to prevent other then project files to be compiled
 
 module Parser
 
@@ -45,7 +45,7 @@ module Vernacular
     # Extend Ruby syntax to match ~def...~end
     class TrackMethod < RegexModifier
 
-      PATTERN = /~def\s+.+~end/m
+      PATTERN = /~def\s+.+?~end/m
 
       def initialize
         super(PATTERN)
